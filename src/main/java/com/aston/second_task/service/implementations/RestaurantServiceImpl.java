@@ -20,36 +20,30 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Resource
     private UserTransaction userTransaction;
 
-    @Override
     @Transactional
     public void saveRestaurant(Restaurant restaurant) {
         restaurantDAO.save(restaurant);
     }
 
-    @Override
     public Restaurant findRestaurantById(Integer id) {
         return restaurantDAO.findById(id);
     }
 
-    @Override
     public List<Restaurant> findAllRestaurants() {
         return restaurantDAO.findAll();
     }
 
-    @Override
     @Transactional
     public void updateRestaurant(Restaurant restaurant, Integer id) {
         restaurant.setId(id);
         restaurantDAO.update(restaurant);
     }
 
-    @Override
     @Transactional
     public void deleteRestaurant(Integer id) {
         restaurantDAO.delete(id);
     }
 
-    @Override
     public Integer getRestaurantID(Restaurant restaurant){
         return restaurantDAO.getId(restaurant);
     }

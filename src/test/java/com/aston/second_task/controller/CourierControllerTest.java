@@ -3,8 +3,8 @@ package com.aston.second_task.controller;
 import com.aston.second_task.dto.incoming.CourierDTOInc;
 import com.aston.second_task.dto.outgoing.CourierDTOOut;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
+import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.entity.Courier;
-import com.aston.second_task.entity.User;
 import com.aston.second_task.service.interfaces.CourierService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,6 +15,7 @@ import org.mockito.MockitoAnnotations;
 import jakarta.ws.rs.core.Response;
 
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -38,9 +39,9 @@ class CourierControllerTest {
         Integer id = 1;
         Courier courier = new Courier();
         courier.setId(id);
-        User user = new User();
-        user.setId(1);
-        courier.setUser(user);
+        AppUser appUser = new AppUser();
+        appUser.setId(1);
+        courier.setUser(appUser);
 
         CourierDTOOut courierDTOOut = new CourierDTOOut();
         courierDTOOut.setUser(new UserDTOOut());
@@ -55,17 +56,17 @@ class CourierControllerTest {
 
     @Test
     void getAllCouriers() {
-        User user1 = new User(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "courier");
-        User user2 = new User(2, "Jane", "Doe", "jane.doe@example.com", "0987654321", "password", "456 Elm St", "courier");
+        AppUser appUser1 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "courier", new HashSet<>());
+        AppUser appUser2 = new AppUser(2, "Jane", "Doe", "jane.doe@example.com", "0987654321", "password", "456 Elm St", "courier", new HashSet<>());
 
         Courier courier1 = new Courier();
         courier1.setId(1);
-        courier1.setUser(user1);
+        courier1.setUser(appUser1);
         courier1.setVehicleModel("lada");
 
         Courier courier2 = new Courier();
         courier2.setId(2);
-        courier2.setUser(user2);
+        courier2.setUser(appUser2);
         courier2.setVehicleModel("mazda");
 
         List<Courier> couriers = Arrays.asList(courier1, courier2);
@@ -95,13 +96,13 @@ class CourierControllerTest {
     void saveCourier() {
         CourierDTOInc courierDTOInc = new CourierDTOInc();
         courierDTOInc.setVehicleModel("ford");
-        User user = new User();
-        user.setId(1);
-        courierDTOInc.setUser(user);
+        AppUser appUser = new AppUser();
+        appUser.setId(1);
+        courierDTOInc.setUser(appUser);
 
         Courier courier = new Courier();
         courier.setVehicleModel("ford");
-        courier.setUser(user);
+        courier.setUser(appUser);
 
         Response response = courierController.saveCourier(courierDTOInc);
 
@@ -114,13 +115,13 @@ class CourierControllerTest {
         Integer id = 1;
         CourierDTOInc courierDTOInc = new CourierDTOInc();
         courierDTOInc.setVehicleModel("mazda");
-        User user = new User();
-        user.setId(1);
-        courierDTOInc.setUser(user);
+        AppUser appUser = new AppUser();
+        appUser.setId(1);
+        courierDTOInc.setUser(appUser);
 
         Courier courier = new Courier();
         courier.setVehicleModel("mazda");
-        courier.setUser(user);
+        courier.setUser(appUser);
 
         Response response = courierController.updateCourier(courierDTOInc, id);
 

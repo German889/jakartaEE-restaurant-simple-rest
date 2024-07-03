@@ -3,10 +3,8 @@ package com.aston.second_task.controller;
 import com.aston.second_task.dto.incoming.CourierDTOInc;
 import com.aston.second_task.dto.outgoing.CourierDTOOut;
 import com.aston.second_task.entity.Courier;
-import com.aston.second_task.entity.User;
 import com.aston.second_task.mapper.CourierMapper;
 import com.aston.second_task.service.interfaces.CourierService;
-import com.aston.second_task.service.interfaces.UserService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,8 +17,6 @@ import java.util.stream.Collectors;
 public class CourierController {
     @Inject
     private CourierService courierService;
-//    @Inject
-//    private UserService userService;
 
     @GET
     @Path("/get/{id}")
@@ -48,9 +44,6 @@ public class CourierController {
     public Response saveCourier(CourierDTOInc courierDTOInc) {
         try {
             Courier courier = CourierMapper.INSTANCE.courierDTOIncToCourier(courierDTOInc);
-//            User user = courier.getUser();
-//            user.setId(userService.getUserID(user));
-//            courier.setUser(user);
             courierService.saveCourier(courier);
             return Response.ok().build();
         } catch (Exception e) {

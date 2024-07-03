@@ -4,33 +4,41 @@ import jakarta.persistence.*;
 
 import java.math.BigDecimal;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name = "restaurants", schema = "public")
 public class Restaurant {
+    public Restaurant(){}
+
+    public Restaurant(Integer id, String name, String address, BigDecimal rating, String email, String phone, String workingHours, Set<AppUser> reviewOwners) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.rating = rating;
+        this.email = email;
+        this.phone = phone;
+        this.workingHours = workingHours;
+        this.reviewOwners = reviewOwners;
+    }
+
     @Id
-    @Column(name = "restaurantid")
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
-
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "address")
     private String address;
 
     @Column(name = "rating", precision = 2, scale = 1)
     private BigDecimal rating;
-
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "phone")
     private String phone;
-
-    @Column(name = "workinghours")
     private String workingHours;
-
+    @ManyToMany
+    @JoinTable(
+            name = "review",
+            joinColumns = @JoinColumn(name = "restaurant_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<AppUser> reviewOwners;
 
     public Integer getId() {
         return id;
@@ -88,7 +96,14 @@ public class Restaurant {
         this.workingHours = workingHours;
     }
 
-    @Override
+    public Set<AppUser> getReviewOwners() {
+        return reviewOwners;
+    }
+
+    public void setReviewOwners(Set<AppUser> reviewOwners) {
+        this.reviewOwners = reviewOwners;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -96,7 +111,6 @@ public class Restaurant {
         return Objects.equals(id, that.id) && Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(rating, that.rating) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(workingHours, that.workingHours);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(id, name, address, rating, email, phone, workingHours);
     }

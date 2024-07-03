@@ -70,7 +70,6 @@ public class RestaurantDTOInc {
         this.workingHours = workingHours;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -78,7 +77,6 @@ public class RestaurantDTOInc {
         return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(rating, that.rating) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(workingHours, that.workingHours);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(name, address, rating, email, phone, workingHours);
     }

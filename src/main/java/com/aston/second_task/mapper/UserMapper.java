@@ -2,7 +2,7 @@ package com.aston.second_task.mapper;
 
 import com.aston.second_task.dto.incoming.UserDTOInc;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -17,11 +17,10 @@ public interface UserMapper {
         @Mapping(source = "password", target = "password")
         @Mapping(source = "address", target = "address")
         @Mapping(source = "role", target = "role")
-
-    User userDTOIncToUser(UserDTOInc userDTOInc);
+        AppUser userDTOIncToUser(UserDTOInc userDTOInc);
         @Mapping(source = "firstName", target = "firstName")
         @Mapping(source = "lastName", target = "lastName")
         @Mapping(source = "email", target = "email")
-    UserDTOOut userToUserDTOOut(User user);
+    UserDTOOut userToUserDTOOut(AppUser appUser);
 
 }

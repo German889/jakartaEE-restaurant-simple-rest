@@ -14,27 +14,22 @@ import java.util.NoSuchElementException;
 public class RestaurantDAOImpl implements RestaurantDAO {
     @PersistenceContext(unitName = "Givermaen")
     private EntityManager em;
-    @Override
     public void save(Restaurant restaurant) {
         em.persist(restaurant);
     }
 
-    @Override
     public Restaurant findById(Integer id) {
         return em.find(Restaurant.class, id);
     }
 
-    @Override
     public List<Restaurant> findAll() {
         return em.createQuery("SELECT r FROM Restaurant r", Restaurant.class).getResultList();
     }
 
-    @Override
     public void update(Restaurant restaurant) {
         em.merge(restaurant);
     }
 
-    @Override
     public void delete(Integer id) {
         String jpql = "DELETE FROM Restaurant r WHERE r.id = :id";
         Query query = em.createQuery(jpql);
@@ -42,7 +37,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
         query.executeUpdate();
     }
 
-    @Override
     public Integer getId(Restaurant restaurant){
         try{
             String jpql = "SELECT r.id FROM Restaurant r " +
@@ -56,7 +50,6 @@ public class RestaurantDAOImpl implements RestaurantDAO {
             return 0;
         }
     }
-    @Override
     public void setEntityManager(EntityManager em) {
         this.em = em;
     }

@@ -2,7 +2,7 @@ package com.aston.second_task.controller;
 
 import com.aston.second_task.dto.incoming.UserDTOInc;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 
 import com.aston.second_task.service.interfaces.UserService;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +14,11 @@ import org.mockito.MockitoAnnotations;
 import jakarta.ws.rs.core.Response;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class UserControllerTest {
+class AppUserControllerTest {
 
     @Mock
     private UserService userService;
@@ -35,9 +34,9 @@ class UserControllerTest {
     @Test
     void getUser() {
         Integer userId = 1;
-        User user = new User();
-        user.setId(userId);
-        when(userService.findUserById(userId)).thenReturn(user);
+        AppUser appUser = new AppUser();
+        appUser.setId(userId);
+        when(userService.findUserById(userId)).thenReturn(appUser);
         Response response = userController.getUser(userId);
         UserDTOOut userDTOOut = new UserDTOOut();
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -46,12 +45,12 @@ class UserControllerTest {
 
     @Test
     void getAllUsers() {
-        List<User> users = new ArrayList<>();
-        User user1 = new User(); user1.setId(1);
-        User user2 = new User(); user2.setId(2);
-        users.add(user1);
-        users.add(user2);
-        when(userService.findAllUsers()).thenReturn(users);
+        List<AppUser> appUsers = new ArrayList<>();
+        AppUser appUser1 = new AppUser(); appUser1.setId(1);
+        AppUser appUser2 = new AppUser(); appUser2.setId(2);
+        appUsers.add(appUser1);
+        appUsers.add(appUser2);
+        when(userService.findAllUsers()).thenReturn(appUsers);
         Response response = userController.getAllUsers();
         UserDTOOut userDTOOut1 = new UserDTOOut();
         UserDTOOut userDTOOut2 = new UserDTOOut();
@@ -63,8 +62,8 @@ class UserControllerTest {
 
     @Test
     void saveUser() {
-        User user = new User();
-        when(userService.saveUser(user)).thenReturn(user);
+        AppUser appUser = new AppUser();
+        when(userService.saveUser(appUser)).thenReturn(appUser);
         UserDTOInc userDTOInc = new UserDTOInc();
         Response response = userController.saveUser(userDTOInc);
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
@@ -74,9 +73,9 @@ class UserControllerTest {
     @Test
     void updateUser() {
         Integer userId = 1;
-        User user = new User();
-        user.setId(userId);
-        when(userService.updateUser(user, userId)).thenReturn(user);
+        AppUser appUser = new AppUser();
+        appUser.setId(userId);
+        when(userService.updateUser(appUser, userId)).thenReturn(appUser);
         UserDTOInc userDTOInc = new UserDTOInc();
         Response response = userController.updateUser(userDTOInc, userId);
 

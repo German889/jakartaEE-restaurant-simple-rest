@@ -1,12 +1,12 @@
 package com.aston.second_task.dto.incoming;
 
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 
 import java.util.Objects;
 
 public class CourierDTOInc {
 
-    private User user;
+    private AppUser appUser;
     private String vehicleRegistrationNumber;
     private String vehicleModel;
     private String status;
@@ -14,20 +14,20 @@ public class CourierDTOInc {
     public CourierDTOInc() {
     }
 
-    public CourierDTOInc(User user, String vehicleRegistrationNumber, String vehicleModel, String status) {
+    public CourierDTOInc(AppUser appUser, String vehicleRegistrationNumber, String vehicleModel, String status) {
 
-        this.user = user;
+        this.appUser = appUser;
         this.vehicleRegistrationNumber = vehicleRegistrationNumber;
         this.vehicleModel = vehicleModel;
         this.status = status;
     }
 
-    public User getUser() {
-        return user;
+    public AppUser getUser() {
+        return appUser;
     }
 
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(AppUser appUser) {
+        this.appUser = appUser;
     }
 
     public String getVehicleRegistrationNumber() {
@@ -54,16 +54,14 @@ public class CourierDTOInc {
         this.status = status;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         CourierDTOInc that = (CourierDTOInc) o;
-        return Objects.equals(user, that.user) && Objects.equals(vehicleRegistrationNumber, that.vehicleRegistrationNumber) && Objects.equals(vehicleModel, that.vehicleModel) && Objects.equals(status, that.status);
+        return Objects.equals(appUser, that.appUser) && Objects.equals(vehicleRegistrationNumber, that.vehicleRegistrationNumber) && Objects.equals(vehicleModel, that.vehicleModel) && Objects.equals(status, that.status);
     }
 
-    @Override
     public int hashCode() {
-        return Objects.hash(user, vehicleRegistrationNumber, vehicleModel, status);
+        return Objects.hash(appUser, vehicleRegistrationNumber, vehicleModel, status);
     }
 }

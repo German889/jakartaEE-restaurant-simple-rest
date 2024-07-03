@@ -40,7 +40,6 @@ public class RestaurantDTOOut {
         this.rating = rating;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -48,7 +47,6 @@ public class RestaurantDTOOut {
         return Objects.equals(name, that.name) && Objects.equals(address, that.address) && Objects.equals(rating, that.rating);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(name, address, rating);
     }

@@ -3,14 +3,14 @@ package com.aston.second_task.entity;
 import jakarta.persistence.*;
 
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-@Table(name="users", schema = "public")
-public class User {
+public class AppUser {
 
-    public User(){}
+    public AppUser(){}
 
-    public User(Integer id, String firstName, String lastName, String email, String phone, String password, String address, String role) {
+    public AppUser(Integer id, String firstName, String lastName, String email, String phone, String password, String address, String role, Set<Restaurant> reviewedRestaurants) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -19,33 +19,27 @@ public class User {
         this.password = password;
         this.address = address;
         this.role = role;
+        this.reviewedRestaurants = reviewedRestaurants;
     }
 
     @Id
-    @Column(name = "userid")
     @GeneratedValue(strategy= GenerationType.AUTO)
     private Integer id;
-
-    @Column(name = "firstname")
     private String firstName;
-
-    @Column(name = "lastname")
     private String lastName;
-
-    @Column(name = "email")
     private String email;
-
-    @Column(name = "phone")
     private String phone;
-
-    @Column(name = "password")
     private String password;
-
-    @Column(name = "address")
     private String address;
-
-    @Column(name = "role")
     private String role;
+
+    @ManyToMany
+    @JoinTable(
+            name = "review",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "restaurant_id")
+    )
+    private Set<Restaurant> reviewedRestaurants;
 
 
     public Integer getId() {
@@ -112,15 +106,21 @@ public class User {
         this.role = role;
     }
 
-    @Override
+    public Set<Restaurant> getReviewedRestaurants() {
+        return reviewedRestaurants;
+    }
+
+    public void setReviewedRestaurants(Set<Restaurant> reviewedRestaurants) {
+        this.reviewedRestaurants = reviewedRestaurants;
+    }
+
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return Objects.equals(id, user.id) && Objects.equals(firstName, user.firstName) && Objects.equals(lastName, user.lastName) && Objects.equals(email, user.email) && Objects.equals(phone, user.phone) && Objects.equals(password, user.password) && Objects.equals(address, user.address) && Objects.equals(role, user.role);
+        AppUser appUser = (AppUser) o;
+        return Objects.equals(id, appUser.id) && Objects.equals(firstName, appUser.firstName) && Objects.equals(lastName, appUser.lastName) && Objects.equals(email, appUser.email) && Objects.equals(phone, appUser.phone) && Objects.equals(password, appUser.password) && Objects.equals(address, appUser.address) && Objects.equals(role, appUser.role);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(id, firstName, lastName, email, phone, password, address, role);
     }

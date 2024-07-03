@@ -12,35 +12,33 @@ import java.util.List;
 public class CourierDAOImpl implements CourierDAO {
     @PersistenceContext(unitName = "Givermaen")
     private EntityManager em;
-    @Override
     public void save(Courier courier) {
         em.persist(courier);
     }
 
-    @Override
     public Courier findById(Integer id) {
         return em.find(Courier.class, id);
     }
 
-    @Override
     public List<Courier> findAll() {
         return em.createQuery("SELECT c FROM Courier c", Courier.class).getResultList();
     }
 
-    @Override
     public void update(Courier courier) {
         em.merge(courier);
     }
 
-    @Override
     public void remove(Integer id) {
         String jpql = "DELETE FROM Courier c WHERE c.id = :id";
         Query query = em.createQuery(jpql);
         query.setParameter("id", id);
         query.executeUpdate();
     }
-    @Override
     public void setEntityManager(EntityManager em) {
         this.em = em;
+    }
+
+    public EntityManager getEntityManager() {
+        return this.em;
     }
 }

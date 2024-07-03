@@ -1,8 +1,7 @@
 package com.aston.second_task.repository.DAOImpl;
 
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.repository.DAO.UserDAO;
-import com.aston.second_task.repository.DAOImpl.UserDAOImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.testcontainers.containers.PostgreSQLContainer;
@@ -18,7 +17,7 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
-public class UserDAOImplTest {
+public class AppUserDAOImplTest {
 
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13")
@@ -44,89 +43,89 @@ public class UserDAOImplTest {
 
     @Test
     public void testSaveAndFindById() {
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
+        AppUser appUser = new AppUser();
+        appUser.setEmail("test@example.com");
+        appUser.setPassword("password");
 
         entityManager.getTransaction().begin();
-        userDAO.save(user);
+        userDAO.save(appUser);
         entityManager.getTransaction().commit();
 
-        User foundUser = userDAO.findById(user.getId());
-        assertNotNull(foundUser);
-        assertEquals(user.getEmail(), foundUser.getEmail());
+        AppUser foundAppUser = userDAO.findById(appUser.getId());
+        assertNotNull(foundAppUser);
+        assertEquals(appUser.getEmail(), foundAppUser.getEmail());
     }
 
     @Test
     public void testFindAll() {
-        User user1 = new User();
-        user1.setEmail("test1@example.com");
-        user1.setPassword("password1");
+        AppUser appUser1 = new AppUser();
+        appUser1.setEmail("test1@example.com");
+        appUser1.setPassword("password1");
 
-        User user2 = new User();
-        user2.setEmail("test2@example.com");
-        user2.setPassword("password2");
+        AppUser appUser2 = new AppUser();
+        appUser2.setEmail("test2@example.com");
+        appUser2.setPassword("password2");
 
         entityManager.getTransaction().begin();
-        userDAO.save(user1);
-        userDAO.save(user2);
+        userDAO.save(appUser1);
+        userDAO.save(appUser2);
         entityManager.getTransaction().commit();
 
-        List<User> users = userDAO.findAll();
-        assertEquals(2, users.size());
+        List<AppUser> appUsers = userDAO.findAll();
+        assertEquals(2, appUsers.size());
     }
 
     @Test
     public void testUpdate() {
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
+        AppUser appUser = new AppUser();
+        appUser.setEmail("test@example.com");
+        appUser.setPassword("password");
 
         entityManager.getTransaction().begin();
-        userDAO.save(user);
+        userDAO.save(appUser);
         entityManager.getTransaction().commit();
 
-        user.setEmail("updated@example.com");
+        appUser.setEmail("updated@example.com");
 
         entityManager.getTransaction().begin();
-        userDAO.update(user);
+        userDAO.update(appUser);
         entityManager.getTransaction().commit();
 
-        User updatedUser = userDAO.findById(user.getId());
-        assertNotNull(updatedUser);
-        assertEquals("updated@example.com", updatedUser.getEmail());
+        AppUser updatedAppUser = userDAO.findById(appUser.getId());
+        assertNotNull(updatedAppUser);
+        assertEquals("updated@example.com", updatedAppUser.getEmail());
     }
 
     @Test
     public void testDelete() {
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
+        AppUser appUser = new AppUser();
+        appUser.setEmail("test@example.com");
+        appUser.setPassword("password");
 
         entityManager.getTransaction().begin();
-        userDAO.save(user);
+        userDAO.save(appUser);
         entityManager.getTransaction().commit();
 
         entityManager.getTransaction().begin();
-        userDAO.delete(user.getId());
+        userDAO.delete(appUser.getId());
         entityManager.getTransaction().commit();
 
-        User deletedUser = userDAO.findById(user.getId());
-        assertNull(deletedUser);
+        AppUser deletedAppUser = userDAO.findById(appUser.getId());
+        assertNull(deletedAppUser);
     }
 
     @Test
     public void testGetId() {
-        User user = new User();
-        user.setEmail("test@example.com");
-        user.setPassword("password");
+        AppUser appUser = new AppUser();
+        appUser.setEmail("test@example.com");
+        appUser.setPassword("password");
 
         entityManager.getTransaction().begin();
-        userDAO.save(user);
+        userDAO.save(appUser);
         entityManager.getTransaction().commit();
 
-        Integer id = userDAO.getId(user);
+        Integer id = userDAO.getId(appUser);
         assertNotNull(id);
-        assertEquals(user.getId(), id);
+        assertEquals(appUser.getId(), id);
     }
 }

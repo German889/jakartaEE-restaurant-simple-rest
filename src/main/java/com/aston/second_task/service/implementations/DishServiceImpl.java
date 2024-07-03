@@ -20,30 +20,25 @@ public class DishServiceImpl implements DishService {
     @Resource
     private UserTransaction userTransaction;
 
-    @Override
     @Transactional
     public void saveDish(Dish dish) {
         dishDAO.save(dish);
     }
 
-    @Override
     public Dish findDishById(Integer id) {
         return dishDAO.findById(id);
     }
 
-    @Override
     public List<Dish> findAllDishes() {
         return dishDAO.findAll();
     }
 
-    @Override
     @Transactional
     public void updateDish(Dish dish, Integer id) {
         dish.setId(id);
         dishDAO.update(dish);
     }
 
-    @Override
     @Transactional
     public void deleteDish(Integer id) {
         dishDAO.delete(id);

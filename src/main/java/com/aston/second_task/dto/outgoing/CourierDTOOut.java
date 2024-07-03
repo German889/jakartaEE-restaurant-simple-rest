@@ -1,8 +1,5 @@
 package com.aston.second_task.dto.outgoing;
 
-import com.aston.second_task.dto.incoming.UserDTOInc;
-import com.aston.second_task.entity.User;
-
 import java.util.Objects;
 
 public class CourierDTOOut {
@@ -41,7 +38,6 @@ public class CourierDTOOut {
         this.status = status;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -49,7 +45,6 @@ public class CourierDTOOut {
         return Objects.equals(user, that.user) && Objects.equals(vehicleModel, that.vehicleModel) && Objects.equals(status, that.status);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(user, vehicleModel, status);
     }

@@ -1,6 +1,6 @@
 package com.aston.second_task.service.implementations;
 
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.repository.DAO.UserDAO;
 import com.aston.second_task.service.interfaces.UserService;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -19,44 +19,39 @@ public class UserServiceImpl implements UserService {
     @Inject
     private UserDAO userDAO;
 
-    @Override
     @Transactional
-    public User saveUser(User user) {
+    public AppUser saveUser(AppUser appUser) {
         try {
-            logger.info("Saving user: {}", user);
-            userDAO.save(user);
-            return user;
+            logger.info("Saving appUser: {}", appUser);
+            userDAO.save(appUser);
+            return appUser;
         } catch (Exception e) {
-            logger.error("Failed to save user: {}", user, e);
-            throw new RuntimeException("Failed to save user", e);
+            logger.error("Failed to save appUser: {}", appUser, e);
+            throw new RuntimeException("Failed to save appUser", e);
         }
     }
 
-    @Override
-    public User findUserById(Integer id) {
+    public AppUser findUserById(Integer id) {
         return userDAO.findById(id);
     }
 
-    @Override
-    public List<User> findAllUsers() {
+    public List<AppUser> findAllUsers() {
         return userDAO.findAll();
     }
 
-    @Override
     @Transactional
-    public User updateUser(User user, Integer id) {
+    public AppUser updateUser(AppUser appUser, Integer id) {
         try {
-            logger.info("Updating user: {}", user);
-            user.setId(id);
-            userDAO.update(user);
-            return user;
+            logger.info("Updating appUser: {}", appUser);
+            appUser.setId(id);
+            userDAO.update(appUser);
+            return appUser;
         } catch (Exception e) {
-            logger.error("Failed to update user: {}", user, e);
-            throw new RuntimeException("Failed to update user", e);
+            logger.error("Failed to update appUser: {}", appUser, e);
+            throw new RuntimeException("Failed to update appUser", e);
         }
     }
 
-    @Override
     @Transactional
     public Integer deleteUser(Integer id) {
         try {
@@ -68,8 +63,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("Failed to delete user", e);
         }
     }
-    @Override
-    public Integer getUserID(User user){
-        return userDAO.getId(user);
+    public Integer getUserID(AppUser appUser){
+        return userDAO.getId(appUser);
     }
 }

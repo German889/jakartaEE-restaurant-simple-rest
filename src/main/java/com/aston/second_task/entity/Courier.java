@@ -5,13 +5,12 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "couriers", schema = "public")
 public class Courier {
     public Courier(){}
 
-    public Courier(Integer id, User user, String vehicleRegistrationNumber, String vehicleModel, String status) {
+    public Courier(Integer id, AppUser appUser, String vehicleRegistrationNumber, String vehicleModel, String status) {
         this.id = id;
-        this.user = user;
+        this.appUser = appUser;
         this.vehicleRegistrationNumber = vehicleRegistrationNumber;
         this.vehicleModel = vehicleModel;
         this.status = status;
@@ -19,40 +18,28 @@ public class Courier {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "courierid")
     private Integer id;
 
     @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "userid", referencedColumnName = "userid")
-    private User user;
-
-    @Column(name = "vehicleregistrationnumber")
-    private String vehicleRegistrationNumber;
-
-    @Column(name = "vehiclemodel")
+    private AppUser appUser;
+        private String vehicleRegistrationNumber;
     private String vehicleModel;
-
-    @Column(name = "status")
     private String status;
-
 
     public Integer getId() {
         return id;
     }
-
     public void setId(Integer id) {
         this.id = id;
     }
-
-    public User getUser() {
-        return user;
+    public AppUser getUser() {
+        return appUser;
     }
-
-    public void setUser(User user) {
-        this.user = user;
+    public void setUser(AppUser appUser) {
+        this.appUser = appUser;
     }
-
-    public String getVehicleRegistrationNumber() {
+        public String getVehicleRegistrationNumber() {
         return vehicleRegistrationNumber;
     }
 
@@ -81,11 +68,11 @@ public class Courier {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Courier courier = (Courier) o;
-        return Objects.equals(id, courier.id) && Objects.equals(user, courier.user) && Objects.equals(vehicleRegistrationNumber, courier.vehicleRegistrationNumber) && Objects.equals(vehicleModel, courier.vehicleModel) && Objects.equals(status, courier.status);
+        return Objects.equals(id, courier.id) && Objects.equals(appUser, courier.appUser) && Objects.equals(vehicleRegistrationNumber, courier.vehicleRegistrationNumber) && Objects.equals(vehicleModel, courier.vehicleModel) && Objects.equals(status, courier.status);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, user, vehicleRegistrationNumber, vehicleModel, status);
+        return Objects.hash(id, appUser, vehicleRegistrationNumber, vehicleModel, status);
     }
 }

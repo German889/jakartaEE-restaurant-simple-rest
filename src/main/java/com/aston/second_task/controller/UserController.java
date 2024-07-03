@@ -2,7 +2,7 @@ package com.aston.second_task.controller;
 
 import com.aston.second_task.dto.incoming.UserDTOInc;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.mapper.UserMapper;
 import com.aston.second_task.service.interfaces.UserService;
 import jakarta.inject.Inject;
@@ -22,8 +22,8 @@ public class UserController {
     @Path("/get/{id}")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getUser(@PathParam("id") Integer id) {
-        User user = userService.findUserById(id);
-        UserDTOOut userDTOOut = UserMapper.INSTANCE.userToUserDTOOut(user);
+        AppUser appUser = userService.findUserById(id);
+        UserDTOOut userDTOOut = UserMapper.INSTANCE.userToUserDTOOut(appUser);
         return Response.ok(userDTOOut).build();
     }
 
@@ -31,8 +31,8 @@ public class UserController {
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getAllUsers(){
-        List<User> users = userService.findAllUsers();
-        List<UserDTOOut> userDTOOuts = users.stream()
+        List<AppUser> appUsers = userService.findAllUsers();
+        List<UserDTOOut> userDTOOuts = appUsers.stream()
                 .map(UserMapper.INSTANCE::userToUserDTOOut)
                 .collect(Collectors.toList());
         return Response.ok(userDTOOuts).build();
@@ -43,8 +43,8 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response saveUser(UserDTOInc userDTOInc) {
         try {
-            User user = UserMapper.INSTANCE.userDTOIncToUser(userDTOInc);
-            userService.saveUser(user);
+            AppUser appUser = UserMapper.INSTANCE.userDTOIncToUser(userDTOInc);
+            userService.saveUser(appUser);
             return Response.ok().build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -59,8 +59,8 @@ public class UserController {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response updateUser(UserDTOInc userDTOInc, @PathParam("id") Integer id){
         try {
-            User user = UserMapper.INSTANCE.userDTOIncToUser(userDTOInc);
-            userService.updateUser(user, id);
+            AppUser appUser = UserMapper.INSTANCE.userDTOIncToUser(userDTOInc);
+            userService.updateUser(appUser, id);
             return Response.ok().build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR)

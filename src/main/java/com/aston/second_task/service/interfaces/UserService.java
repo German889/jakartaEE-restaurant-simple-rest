@@ -1,14 +1,14 @@
 package com.aston.second_task.service.interfaces;
 
-import com.aston.second_task.entity.User;
+import com.aston.second_task.entity.AppUser;
 
 import java.util.List;
 
 public interface UserService {
-    User saveUser(User user);
-    User findUserById(Integer id);
-    List<User> findAllUsers();
-    User updateUser(User user, Integer id);
+    AppUser saveUser(AppUser appUser);
+    AppUser findUserById(Integer id);
+    List<AppUser> findAllUsers();
+    AppUser updateUser(AppUser appUser, Integer id);
     Integer deleteUser(Integer id);
-    Integer getUserID(User user);
+    Integer getUserID(AppUser appUser);
 }

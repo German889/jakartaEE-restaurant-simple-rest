@@ -80,7 +80,6 @@ public class UserDTOInc {
         this.address = address;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -88,7 +87,6 @@ public class UserDTOInc {
         return Objects.equals(firstName, that.firstName) && Objects.equals(lastName, that.lastName) && Objects.equals(email, that.email) && Objects.equals(phone, that.phone) && Objects.equals(password, that.password) && Objects.equals(address, that.address) && Objects.equals(role, that.role);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(firstName, lastName, email, phone, password, address, role);
     }

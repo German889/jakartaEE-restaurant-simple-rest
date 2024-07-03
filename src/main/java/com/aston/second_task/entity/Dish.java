@@ -5,27 +5,18 @@ import jakarta.persistence.*;
 import java.util.Objects;
 
 @Entity
-@Table(name = "dishes", schema = "public")
 public class Dish {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "dishid")
     private Integer id;
 
-    @Column(name = "name")
     private String name;
-
-    @Column(name = "description")
     private String description;
-
-    @Column(name = "price")
     private String price;
 
     @ManyToOne
     @JoinColumn(name = "restaurantid")
     private Restaurant restaurant;
-
-    @Column(name = "imageurl")
     private String imageURL;
 
 
@@ -77,7 +68,6 @@ public class Dish {
         this.imageURL = imageURL;
     }
 
-    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -85,7 +75,6 @@ public class Dish {
         return Objects.equals(id, dish.id) && Objects.equals(name, dish.name) && Objects.equals(description, dish.description) && Objects.equals(price, dish.price) && Objects.equals(restaurant, dish.restaurant) && Objects.equals(imageURL, dish.imageURL);
     }
 
-    @Override
     public int hashCode() {
         return Objects.hash(id, name, description, price, restaurant, imageURL);
     }
