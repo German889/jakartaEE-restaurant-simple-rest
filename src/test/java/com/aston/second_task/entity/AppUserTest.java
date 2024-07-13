@@ -13,7 +13,17 @@ class AppUserTest {
 
     @BeforeEach
     void setUp() {
-        appUser = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
+        appUser = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
     }
 
     @Test
@@ -95,26 +105,66 @@ class AppUserTest {
 
     @Test
     void getRole() {
-        assertEquals("USER", appUser.getRole());
+        assertEquals("courier", appUser.getRole());
     }
 
     @Test
     void setRole() {
-        appUser.setRole("ADMIN");
-        assertEquals("ADMIN", appUser.getRole());
+        appUser.setRole("admin");
+        assertEquals("admin", appUser.getRole());
     }
 
     @Test
     void testEquals() {
-        AppUser appUser1 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
-        AppUser appUser2 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
+        AppUser appUser1 = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
+        AppUser appUser2 = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
         assertEquals(appUser1, appUser2);
     }
 
     @Test
     void testHashCode() {
-        AppUser appUser1 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
-        AppUser appUser2 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
+        AppUser appUser1 = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
+        AppUser appUser2 = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
         assertEquals(appUser1.hashCode(), appUser2.hashCode());
     }
 }

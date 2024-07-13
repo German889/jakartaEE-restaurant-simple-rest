@@ -1,4 +1,4 @@
-package com.aston.second_task.service.interfaces;
+package com.aston.second_task.service;
 
 import com.aston.second_task.entity.AppUser;
 

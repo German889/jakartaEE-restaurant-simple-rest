@@ -20,8 +20,8 @@ public class Courier {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "userid", referencedColumnName = "userid")
+    @OneToOne
+    @JoinColumn(name = "userid", referencedColumnName = "id")
     private AppUser appUser;
         private String vehicleRegistrationNumber;
     private String vehicleModel;

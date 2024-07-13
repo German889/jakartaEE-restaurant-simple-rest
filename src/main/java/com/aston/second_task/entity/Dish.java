@@ -15,7 +15,7 @@ public class Dish {
     private String price;
 
     @ManyToOne
-    @JoinColumn(name = "restaurantid")
+    @JoinColumn(name = "id")
     private Restaurant restaurant;
     private String imageURL;
 

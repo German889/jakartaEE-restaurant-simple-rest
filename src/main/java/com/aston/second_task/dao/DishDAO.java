@@ -1,9 +1,8 @@
-package com.aston.second_task.repository.DAO;
+package com.aston.second_task.dao;
 
 import com.aston.second_task.entity.Dish;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityManager;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface DishDAO {
@@ -12,5 +11,5 @@ public interface DishDAO {
     List<Dish> findAll();
     void update(Dish dish);
     void delete(Integer id);
-    void setEntityManager(EntityManager em);
+    void setConnection(Connection connection);
 }

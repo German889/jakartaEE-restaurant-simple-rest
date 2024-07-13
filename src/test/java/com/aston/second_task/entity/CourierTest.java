@@ -14,7 +14,17 @@ class CourierTest {
 
     @BeforeEach
     void setUp() {
-        appUser = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "USER", new HashSet<>());
+        appUser = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
         courier = new Courier(1, appUser, "ABC123", "Honda Civic", "Available");
     }
 
@@ -36,7 +46,17 @@ class CourierTest {
 
     @Test
     void setUser() {
-        AppUser newAppUser = new AppUser(2, "Jane", "Doe", "jane.doe@example.com", "0987654321", "password", "789 Oak St", "USER", new HashSet<>());
+        AppUser newAppUser = new AppUser.Builder()
+                .id(2)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .phone("0987654321")
+                .password("password")
+                .address("456 Elm St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
         courier.setUser(newAppUser);
         assertEquals(newAppUser, courier.getUser());
     }

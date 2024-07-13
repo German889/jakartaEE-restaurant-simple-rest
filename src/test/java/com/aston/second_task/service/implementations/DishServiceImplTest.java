@@ -1,7 +1,7 @@
 package com.aston.second_task.service.implementations;
 
 import com.aston.second_task.entity.Dish;
-import com.aston.second_task.repository.DAO.DishDAO;
+import com.aston.second_task.dao.DishDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

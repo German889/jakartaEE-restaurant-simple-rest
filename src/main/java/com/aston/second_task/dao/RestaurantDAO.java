@@ -1,8 +1,8 @@
-package com.aston.second_task.repository.DAO;
+package com.aston.second_task.dao;
 
 import com.aston.second_task.entity.Restaurant;
-import jakarta.persistence.EntityManager;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface RestaurantDAO {
@@ -12,5 +12,5 @@ public interface RestaurantDAO {
     void update(Restaurant restaurant);
     void delete(Integer id);
     Integer getId(Restaurant restaurant);
-    void setEntityManager(EntityManager em);
+    void setConnection(Connection connection);
 }

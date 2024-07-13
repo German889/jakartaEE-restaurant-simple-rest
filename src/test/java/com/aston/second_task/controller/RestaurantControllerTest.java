@@ -3,7 +3,7 @@ package com.aston.second_task.controller;
 import com.aston.second_task.dto.incoming.RestaurantDTOInc;
 import com.aston.second_task.dto.outgoing.RestaurantDTOOut;
 import com.aston.second_task.entity.Restaurant;
-import com.aston.second_task.service.interfaces.RestaurantService;
+import com.aston.second_task.service.RestaurantService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

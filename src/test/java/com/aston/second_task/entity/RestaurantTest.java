@@ -14,7 +14,16 @@ class RestaurantTest {
 
     @BeforeEach
     void setUp() {
-        restaurant = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("4.5"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
+        restaurant = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("4.5"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
     }
 
     @Test
@@ -96,15 +105,51 @@ class RestaurantTest {
 
     @Test
     void testEquals() {
-        Restaurant restaurant1 = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("4.5"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
-        Restaurant restaurant2 = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("4.5"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
+        Restaurant restaurant1 = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("4.5"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
+        Restaurant restaurant2 = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("4.5"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         assertEquals(restaurant1, restaurant2);
     }
 
     @Test
     void testHashCode() {
-        Restaurant restaurant1 = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("4.5"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
-        Restaurant restaurant2 = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("4.5"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
+        Restaurant restaurant1 = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("4.5"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
+        Restaurant restaurant2 = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("4.5"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         assertEquals(restaurant1.hashCode(), restaurant2.hashCode());
     }
 }

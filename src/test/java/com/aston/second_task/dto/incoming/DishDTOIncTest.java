@@ -16,7 +16,16 @@ class DishDTOIncTest {
 
     @BeforeEach
     void setUp() {
-        restaurant = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("7.87"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
+        restaurant = new Restaurant.RestaurantBuilder()
+                .id(1)
+                .name("Burger King")
+                .address("456 Elm St")
+                .rating(new BigDecimal("7.87"))
+                .email("contact@burgerking.com")
+                .phone("1234567890")
+                .workingHours("9:00-21:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         dishDTOInc = new DishDTOInc("Whopper", "A flame-grilled burger with juicy tomatoes, crisp lettuce, creamy mayonnaise, ketchup, and sliced pickles.", "5.99", restaurant, "https://example.com/whopper.jpg");
     }
 
@@ -60,7 +69,16 @@ class DishDTOIncTest {
 
     @Test
     void setRestaurant() {
-        Restaurant newRestaurant = new Restaurant(2, "McDonald's", "101 Pine St", new BigDecimal("6.87"), "contact@mcdonalds.com", "0987654321", "8:00-22:00", new HashSet<>());
+        Restaurant newRestaurant = new Restaurant.RestaurantBuilder()
+                .id(2)
+                .name("McDonald's")
+                .address("101 Pine St")
+                .rating(new BigDecimal("6.87"))
+                .email("contact@mcdonalds.com")
+                .phone("0987654321")
+                .workingHours("8:00-22:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         dishDTOInc.setRestaurant(newRestaurant);
         assertEquals(newRestaurant, dishDTOInc.getRestaurant());
     }

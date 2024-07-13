@@ -5,7 +5,7 @@ import com.aston.second_task.dto.outgoing.CourierDTOOut;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
 import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.entity.Courier;
-import com.aston.second_task.service.interfaces.CourierService;
+import com.aston.second_task.service.CourierService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -56,8 +56,29 @@ class CourierControllerTest {
 
     @Test
     void getAllCouriers() {
-        AppUser appUser1 = new AppUser(1, "John", "Doe", "john.doe@example.com", "1234567890", "password", "123 Main St", "courier", new HashSet<>());
-        AppUser appUser2 = new AppUser(2, "Jane", "Doe", "jane.doe@example.com", "0987654321", "password", "456 Elm St", "courier", new HashSet<>());
+        AppUser appUser1 = new AppUser.Builder()
+                .id(1)
+                .firstName("John")
+                .lastName("Doe")
+                .email("john.doe@example.com")
+                .phone("1234567890")
+                .password("password")
+                .address("123 Main St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
+
+        AppUser appUser2 = new AppUser.Builder()
+                .id(2)
+                .firstName("Jane")
+                .lastName("Doe")
+                .email("jane.doe@example.com")
+                .phone("0987654321")
+                .password("password")
+                .address("456 Elm St")
+                .role("courier")
+                .reviewedRestaurants(new HashSet<>())
+                .build();
 
         Courier courier1 = new Courier();
         courier1.setId(1);

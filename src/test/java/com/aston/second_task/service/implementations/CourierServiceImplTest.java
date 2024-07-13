@@ -1,7 +1,7 @@
 package com.aston.second_task.service.implementations;
 
 import com.aston.second_task.entity.Courier;
-import com.aston.second_task.repository.DAO.CourierDAO;
+import com.aston.second_task.dao.CourierDAO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;

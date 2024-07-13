@@ -10,16 +10,77 @@ public class AppUser {
 
     public AppUser(){}
 
-    public AppUser(Integer id, String firstName, String lastName, String email, String phone, String password, String address, String role, Set<Restaurant> reviewedRestaurants) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.address = address;
-        this.role = role;
-        this.reviewedRestaurants = reviewedRestaurants;
+    private AppUser(Builder builder) {
+        this.id = builder.id;
+        this.firstName = builder.firstName;
+        this.lastName = builder.lastName;
+        this.email = builder.email;
+        this.phone = builder.phone;
+        this.password = builder.password;
+        this.address = builder.address;
+        this.role = builder.role;
+        this.reviewedRestaurants = builder.reviewedRestaurants;
+    }
+    public static class Builder {
+        private Integer id;
+        private String firstName;
+        private String lastName;
+        private String email;
+        private String phone;
+        private String password;
+        private String address;
+        private String role;
+        private Set<Restaurant> reviewedRestaurants;
+
+        public Builder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public Builder firstName(String firstName) {
+            this.firstName = firstName;
+            return this;
+        }
+
+        public Builder lastName(String lastName) {
+            this.lastName = lastName;
+            return this;
+        }
+
+        public Builder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public Builder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public Builder password(String password) {
+            this.password = password;
+            return this;
+        }
+
+        public Builder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public Builder role(String role) {
+            this.role = role;
+            return this;
+        }
+
+        public Builder reviewedRestaurants(Set<Restaurant> reviewedRestaurants) {
+            this.reviewedRestaurants = reviewedRestaurants;
+            return this;
+        }
+
+        public AppUser build() {
+            return new AppUser(this);
+        }
+
     }
 
     @Id

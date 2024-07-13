@@ -10,15 +10,69 @@ import java.util.Set;
 public class Restaurant {
     public Restaurant(){}
 
-    public Restaurant(Integer id, String name, String address, BigDecimal rating, String email, String phone, String workingHours, Set<AppUser> reviewOwners) {
-        this.id = id;
-        this.name = name;
-        this.address = address;
-        this.rating = rating;
-        this.email = email;
-        this.phone = phone;
-        this.workingHours = workingHours;
-        this.reviewOwners = reviewOwners;
+    private Restaurant(RestaurantBuilder builder) {
+        this.id = builder.id;
+        this.name = builder.name;
+        this.address = builder.address;
+        this.rating = builder.rating;
+        this.email = builder.email;
+        this.phone = builder.phone;
+        this.workingHours = builder.workingHours;
+        this.reviewOwners = builder.reviewOwners;
+    }
+    public static class RestaurantBuilder {
+        private Integer id;
+        private String name;
+        private String address;
+        private BigDecimal rating;
+        private String email;
+        private String phone;
+        private String workingHours;
+        private Set<AppUser> reviewOwners;
+
+        public RestaurantBuilder id(Integer id) {
+            this.id = id;
+            return this;
+        }
+
+        public RestaurantBuilder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public RestaurantBuilder address(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public RestaurantBuilder rating(BigDecimal rating) {
+            this.rating = rating;
+            return this;
+        }
+
+        public RestaurantBuilder email(String email) {
+            this.email = email;
+            return this;
+        }
+
+        public RestaurantBuilder phone(String phone) {
+            this.phone = phone;
+            return this;
+        }
+
+        public RestaurantBuilder workingHours(String workingHours) {
+            this.workingHours = workingHours;
+            return this;
+        }
+
+        public RestaurantBuilder reviewOwners(Set<AppUser> reviewOwners) {
+            this.reviewOwners = reviewOwners;
+            return this;
+        }
+
+        public Restaurant build() {
+            return new Restaurant(this);
+        }
     }
 
     @Id
@@ -27,7 +81,7 @@ public class Restaurant {
     private String name;
     private String address;
 
-    @Column(name = "rating", precision = 2, scale = 1)
+    @Column(precision = 2, scale = 1)
     private BigDecimal rating;
     private String email;
     private String phone;

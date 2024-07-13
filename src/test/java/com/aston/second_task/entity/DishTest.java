@@ -15,7 +15,16 @@ class DishTest {
 
     @BeforeEach
     void setUp() {
-        restaurant = new Restaurant(1, "Burger King", "456 Elm St", new BigDecimal("7.89"), "contact@burgerking.com", "1234567890", "9:00-21:00", new HashSet<>());
+        restaurant = new Restaurant.RestaurantBuilder()
+                .id(2)
+                .name("McDonald's")
+                .address("101 Pine St")
+                .rating(new BigDecimal("6.87"))
+                .email("contact@mcdonalds.com")
+                .phone("0987654321")
+                .workingHours("8:00-22:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         dish = new Dish();
         dish.setId(1);
         dish.setName("Whopper");
@@ -76,7 +85,16 @@ class DishTest {
 
     @Test
     void setRestaurant() {
-        Restaurant newRestaurant = new Restaurant(2, "McDonald's", "101 Pine St", new BigDecimal("7.89"), "contact@mcdonalds.com", "0987654321", "8:00-22:00", new HashSet<>());
+        Restaurant newRestaurant = new Restaurant.RestaurantBuilder()
+                .id(2)
+                .name("McDonald's")
+                .address("101 Pine St")
+                .rating(new BigDecimal("6.87"))
+                .email("contact@mcdonalds.com")
+                .phone("0987654321")
+                .workingHours("8:00-22:00")
+                .reviewOwners(new HashSet<>())
+                .build();
         dish.setRestaurant(newRestaurant);
         assertEquals(newRestaurant, dish.getRestaurant());
     }

@@ -1,12 +1,14 @@
 package com.aston.second_task.service.implementations;
 
+import com.aston.second_task.dao.UserDAO;
 import com.aston.second_task.entity.AppUser;
-import com.aston.second_task.repository.DAO.UserDAO;
+import com.aston.second_task.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
@@ -14,6 +16,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class AppUserServiceImplTest {
 
     @Mock
@@ -22,101 +25,129 @@ class AppUserServiceImplTest {
     @InjectMocks
     private UserServiceImpl userService;
 
+
+    private AppUser appUser;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        appUser = new AppUser();
+        appUser.setId(1);
+        appUser.setEmail("test@example.com");
+        appUser.setPassword("password");
     }
 
     @Test
     void saveUser() {
-        AppUser appUser = new AppUser();
-        appUser.setEmail("test@example.com");
-        appUser.setPassword("password");
-
         when(userDAO.save(appUser)).thenReturn(appUser);
 
-        AppUser savedAppUser = userService.saveUser(appUser);
+        AppUser savedUser = userService.saveUser(appUser);
 
-        assertNotNull(savedAppUser);
-        assertEquals(appUser, savedAppUser);
+        assertNotNull(savedUser);
+        assertEquals(appUser, savedUser);
+        verify(userDAO, times(1)).save(appUser);
+    }
+
+    @Test
+    void saveUser_throwsElementNotSavedException() {
+        when(userDAO.save(appUser)).thenThrow(new ElementNotSavedException("User not saved"));
+
+        assertThrows(ElementNotSavedException.class, () -> userService.saveUser(appUser));
         verify(userDAO, times(1)).save(appUser);
     }
 
     @Test
     void findUserById() {
-        Integer id = 1;
-        AppUser appUser = new AppUser();
-        appUser.setId(id);
+        when(userDAO.findById(1)).thenReturn(appUser);
 
-        when(userDAO.findById(id)).thenReturn(appUser);
+        AppUser foundUser = userService.findUserById(1);
 
-        AppUser foundAppUser = userService.findUserById(id);
+        assertNotNull(foundUser);
+        assertEquals(appUser, foundUser);
+        verify(userDAO, times(1)).findById(1);
+    }
 
-        assertNotNull(foundAppUser);
-        assertEquals(id, foundAppUser.getId());
-        verify(userDAO, times(1)).findById(id);
+    @Test
+    void findUserById_throwsElementNotFoundExceptions() {
+        when(userDAO.findById(1)).thenThrow(new ElementNotFoundExceptions("User not found"));
+
+        assertThrows(ElementNotFoundExceptions.class, () -> userService.findUserById(1));
+        verify(userDAO, times(1)).findById(1);
     }
 
     @Test
     void findAllUsers() {
-        AppUser appUser1 = new AppUser();
-        appUser1.setId(1);
-        AppUser appUser2 = new AppUser();
-        appUser2.setId(2);
+        List<AppUser> users = Arrays.asList(appUser);
+        when(userDAO.findAll()).thenReturn(users);
 
-        List<AppUser> appUsers = Arrays.asList(appUser1, appUser2);
+        List<AppUser> foundUsers = userService.findAllUsers();
 
-        when(userDAO.findAll()).thenReturn(appUsers);
+        assertNotNull(foundUsers);
+        assertEquals(users, foundUsers);
+        verify(userDAO, times(1)).findAll();
+    }
 
-        List<AppUser> foundAppUsers = userService.findAllUsers();
+    @Test
+    void findAllUsers_throwsElementsNotFoundException() {
+        when(userDAO.findAll()).thenThrow(new ElementsNotFoundException("Users not found"));
 
-        assertNotNull(foundAppUsers);
-        assertEquals(2, foundAppUsers.size());
+        assertThrows(ElementsNotFoundException.class, () -> userService.findAllUsers());
         verify(userDAO, times(1)).findAll();
     }
 
     @Test
     void updateUser() {
-        Integer id = 1;
-        AppUser appUser = new AppUser();
-        appUser.setEmail("test@example.com");
-        appUser.setPassword("password");
-
         when(userDAO.update(appUser)).thenReturn(appUser);
 
-        AppUser updatedAppUser = userService.updateUser(appUser, id);
+        AppUser updatedUser = userService.updateUser(appUser, 1);
 
-        assertNotNull(updatedAppUser);
-        assertEquals(id, updatedAppUser.getId());
+        assertNotNull(updatedUser);
+        assertEquals(appUser, updatedUser);
+        verify(userDAO, times(1)).update(appUser);
+    }
+
+    @Test
+    void updateUser_throwsElementNotUpdatedException() {
+        when(userDAO.update(appUser)).thenThrow(new ElementNotUpdatedException("User not updated"));
+
+        assertThrows(ElementNotUpdatedException.class, () -> userService.updateUser(appUser, 1));
         verify(userDAO, times(1)).update(appUser);
     }
 
     @Test
     void deleteUser() {
-        Integer id = 1;
+        when(userDAO.delete(1)).thenReturn(1);
 
-        when(userDAO.delete(id)).thenReturn(id);
-
-        Integer deletedId = userService.deleteUser(id);
+        Integer deletedId = userService.deleteUser(1);
 
         assertNotNull(deletedId);
-        assertEquals(id, deletedId);
-        verify(userDAO, times(1)).delete(id);
+        assertEquals(1, deletedId);
+        verify(userDAO, times(1)).delete(1);
+    }
+
+    @Test
+    void deleteUser_throwsElementNotDeletedException() {
+        when(userDAO.delete(1)).thenThrow(new ElementNotDeletedException("User not deleted"));
+
+        assertThrows(ElementNotDeletedException.class, () -> userService.deleteUser(1));
+        verify(userDAO, times(1)).delete(1);
     }
 
     @Test
     void getUserID() {
-        AppUser appUser = new AppUser();
-        appUser.setEmail("test@example.com");
-        appUser.setPassword("password");
-        Integer id = 1;
+        when(userDAO.getId(appUser)).thenReturn(1);
 
-        when(userDAO.getId(appUser)).thenReturn(id);
+        Integer userId = userService.getUserID(appUser);
 
-        Integer foundId = userService.getUserID(appUser);
+        assertNotNull(userId);
+        assertEquals(1, userId);
+        verify(userDAO, times(1)).getId(appUser);
+    }
 
-        assertNotNull(foundId);
-        assertEquals(id, foundId);
+    @Test
+    void getUserID_throwsIdNotReceivedException() {
+        when(userDAO.getId(appUser)).thenThrow(new IdNotReceivedException("Id not found"));
+
+        assertThrows(IdNotReceivedException.class, () -> userService.getUserID(appUser));
         verify(userDAO, times(1)).getId(appUser);
     }
 }

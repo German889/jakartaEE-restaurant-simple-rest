@@ -1,8 +1,8 @@
-package com.aston.second_task.repository.DAO;
+package com.aston.second_task.dao;
 
 import com.aston.second_task.entity.Courier;
-import jakarta.persistence.EntityManager;
 
+import java.sql.Connection;
 import java.util.List;
 
 public interface CourierDAO {
@@ -11,5 +11,5 @@ public interface CourierDAO {
     List<Courier> findAll();
     void update(Courier courier);
     void remove(Integer id);
-    void setEntityManager(EntityManager em);
+    void setConnection(Connection connection);
 }

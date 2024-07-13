@@ -4,7 +4,7 @@ import com.aston.second_task.dto.incoming.UserDTOInc;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
 import com.aston.second_task.entity.AppUser;
 
-import com.aston.second_task.service.interfaces.UserService;
+import com.aston.second_task.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
