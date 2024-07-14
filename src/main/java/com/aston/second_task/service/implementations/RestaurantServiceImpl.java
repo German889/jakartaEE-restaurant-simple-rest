@@ -1,6 +1,4 @@
 package com.aston.second_task.service.implementations;
-
-import com.aston.second_task.dao.daoimpl.RestaurantDAOImpl;
 import com.aston.second_task.entity.Restaurant;
 import com.aston.second_task.dao.RestaurantDAO;
 import com.aston.second_task.exceptions.*;
@@ -10,8 +8,6 @@ import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped

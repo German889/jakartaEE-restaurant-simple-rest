@@ -5,6 +5,8 @@ import com.aston.second_task.dto.outgoing.CourierDTOOut;
 import com.aston.second_task.dto.outgoing.UserDTOOut;
 import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.entity.Courier;
+import com.aston.second_task.exceptions.*;
+import com.aston.second_task.mapper.CourierMapper;
 import com.aston.second_task.service.CourierService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -52,6 +54,23 @@ class CourierControllerTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(courierDTOOut, response.getEntity());
+    }
+    @Test
+    void getCourier_NotFound() {
+        Integer courierId = 1;
+        when(courierService.findCourierById(courierId)).thenThrow(new ElementNotFoundExceptions("Courier not found"));
+        Response response = courierController.getCourier(courierId);
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertEquals("Courier not found", response.getEntity());
+    }
+
+    @Test
+    void getCourier_InternalServerError() {
+        Integer courierId = 1;
+        when(courierService.findCourierById(courierId)).thenThrow(new RuntimeException("Some unexpected error"));
+        Response response = courierController.getCourier(courierId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
     }
 
     @Test
@@ -112,6 +131,21 @@ class CourierControllerTest {
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(courierDTOOuts, response.getEntity());
     }
+    @Test
+    void getAllCouriers_NotFound() {
+        when(courierService.findAllCouriers()).thenThrow(new ElementsNotFoundException("No couriers found"));
+        Response response = courierController.getAllCouriers();
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertEquals("No couriers found", response.getEntity());
+    }
+
+    @Test
+    void getAllCouriers_InternalServerError() {
+        when(courierService.findAllCouriers()).thenThrow(new RuntimeException("Some unexpected error"));
+        Response response = courierController.getAllCouriers();
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
+    }
 
     @Test
     void saveCourier() {
@@ -129,6 +163,25 @@ class CourierControllerTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         verify(courierService, times(1)).saveCourier(courier);
+    }
+    @Test
+    void saveCourier_ElementNotSaved() {
+        CourierDTOInc courierDTOInc = new CourierDTOInc();
+        Courier courier = CourierMapper.INSTANCE.courierDTOIncToCourier(courierDTOInc);
+        doThrow(new ElementNotSavedException("Error saving courier")).when(courierService).saveCourier(courier);
+        Response response = courierController.saveCourier(courierDTOInc);
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error saving courier", response.getEntity());
+    }
+
+    @Test
+    void saveCourier_InternalServerError() {
+        CourierDTOInc courierDTOInc = new CourierDTOInc();
+        Courier courier = CourierMapper.INSTANCE.courierDTOIncToCourier(courierDTOInc);
+        doThrow(new RuntimeException("Some unexpected error")).when(courierService).saveCourier(courier);
+        Response response = courierController.saveCourier(courierDTOInc);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
     }
 
     @Test
@@ -149,6 +202,27 @@ class CourierControllerTest {
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         verify(courierService, times(1)).updateCourier(courier, id);
     }
+    @Test
+    void updateCourier_ElementNotUpdated() {
+        Integer courierId = 1;
+        CourierDTOInc courierDTOInc = new CourierDTOInc();
+        Courier courier = CourierMapper.INSTANCE.courierDTOIncToCourier(courierDTOInc);
+        doThrow(new ElementNotUpdatedException("Error updating courier")).when(courierService).updateCourier(courier, courierId);
+        Response response = courierController.updateCourier(courierDTOInc, courierId);
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error updating courier", response.getEntity());
+    }
+
+    @Test
+    void updateCourier_InternalServerError() {
+        Integer courierId = 1;
+        CourierDTOInc courierDTOInc = new CourierDTOInc();
+        Courier courier = CourierMapper.INSTANCE.courierDTOIncToCourier(courierDTOInc);
+        doThrow(new RuntimeException("Some unexpected error")).when(courierService).updateCourier(courier, courierId);
+        Response response = courierController.updateCourier(courierDTOInc, courierId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
+    }
 
     @Test
     void deleteCourier() {
@@ -158,5 +232,22 @@ class CourierControllerTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         verify(courierService, times(1)).deleteCourier(id);
+    }
+    @Test
+    void deleteCourier_ElementNotDeleted() {
+        Integer courierId = 1;
+        doThrow(new ElementNotDeletedException("Error deleting courier")).when(courierService).deleteCourier(courierId);
+        Response response = courierController.deleteCourier(courierId);
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error deleting courier", response.getEntity());
+    }
+
+    @Test
+    void deleteCourier_InternalServerError() {
+        Integer courierId = 1;
+        doThrow(new RuntimeException("Some unexpected error")).when(courierService).deleteCourier(courierId);
+        Response response = courierController.deleteCourier(courierId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
     }
 }

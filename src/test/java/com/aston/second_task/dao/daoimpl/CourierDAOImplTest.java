@@ -3,23 +3,30 @@ package com.aston.second_task.dao.daoimpl;
 import com.aston.second_task.dao.CourierDAO;
 import com.aston.second_task.entity.AppUser;
 import com.aston.second_task.entity.Courier;
+import com.aston.second_task.exceptions.ElementNotFoundExceptions;
+import com.aston.second_task.exceptions.ElementNotSavedException;
+import com.aston.second_task.exceptions.ElementsNotFoundException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
+@ExtendWith(MockitoExtension.class)
 public class CourierDAOImplTest {
+    @Mock
+    private ResultSet resultSet;
 
     @Container
     private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
@@ -93,6 +100,22 @@ public class CourierDAOImplTest {
         assertEquals("Model X", foundCourier.getVehicleModel());
         assertEquals("Active", foundCourier.getStatus());
     }
+    @Test
+    void testSaveThrowsElementNotSavedException() {
+        AppUser appUser = new AppUser();
+        appUser.setId(999);
+        appUser.setFirstName("testuser2");
+
+        Courier courier = new Courier();
+        courier.setUser(appUser);
+        courier.setVehicleRegistrationNumber("ABC123");
+        courier.setVehicleModel("Model X");
+        courier.setStatus("Active");
+
+        assertThrows(ElementNotSavedException.class, () -> {
+            courierDAO.save(courier);
+        });
+    }
 
     @Test
     void testFindAll() {
@@ -118,6 +141,16 @@ public class CourierDAOImplTest {
         List<Courier> couriers = courierDAO.findAll();
         assertEquals(2, couriers.size());
     }
+    @Test
+    void testFindAllReturnsEmptyList() {
+        try (Statement stmt = connection.createStatement()) {
+            stmt.execute("DELETE FROM courier");
+        } catch (SQLException e) {
+            fail("Failed to delete records from courier table");
+        }
+        List<Courier> couriers = courierDAO.findAll();
+        assertTrue(couriers.isEmpty());
+    }
 
     @Test
     void testUpdate() {
@@ -140,6 +173,23 @@ public class CourierDAOImplTest {
         assertNotNull(updatedCourier);
         assertEquals("Inactive", updatedCourier.getStatus());
     }
+    @Test
+    void testUpdateThrowsElementNotFoundExceptions() {
+        AppUser appUser = new AppUser();
+        appUser.setId(1);
+        appUser.setFirstName("testuser");
+
+        Courier courier = new Courier();
+        courier.setId(999); // Несуществующий id
+        courier.setUser(appUser);
+        courier.setVehicleRegistrationNumber("ABC123");
+        courier.setVehicleModel("Model X");
+        courier.setStatus("Active");
+
+        assertThrows(ElementNotFoundExceptions.class, () -> {
+            courierDAO.update(courier);
+        });
+    }
 
     @Test
     void testRemove() {
@@ -159,5 +209,40 @@ public class CourierDAOImplTest {
 
         Courier removedCourier = courierDAO.findById(1);
         assertNull(removedCourier);
+    }
+    @Test
+    void testRemoveThrowsElementNotFoundExceptions() {
+        Integer nonExistentId = 999; // Несуществующий id
+        assertThrows(ElementNotFoundExceptions.class, () -> {
+            courierDAO.remove(nonExistentId);
+        });
+    }
+
+    @Test
+    void testMapResultSetToCourier() throws SQLException {
+        // Подготовка мок-объекта ResultSet
+        when(resultSet.getInt("id")).thenReturn(1);
+        when(resultSet.getInt("userid")).thenReturn(101);
+        when(resultSet.getString("vehicle_registration_number")).thenReturn("ABC123");
+        when(resultSet.getString("vehicle_model")).thenReturn("Model X");
+        when(resultSet.getString("status")).thenReturn("Active");
+
+        CourierDAOImpl courierDAO = new CourierDAOImpl();
+        Courier courier = courierDAO.mapResultSetToCourier(resultSet);
+
+        assertNotNull(courier);
+        assertEquals(1, courier.getId());
+        assertEquals(101, courier.getUser().getId());
+        assertEquals("ABC123", courier.getVehicleRegistrationNumber());
+        assertEquals("Model X", courier.getVehicleModel());
+        assertEquals("Active", courier.getStatus());
+    }
+    @Test
+    void testMapResultSetToCourierThrowsSQLException() throws SQLException {
+        when(resultSet.getInt("id")).thenThrow(new SQLException("Column not found"));
+        CourierDAOImpl courierDAO = new CourierDAOImpl();
+        assertThrows(SQLException.class, () -> {
+            courierDAO.mapResultSetToCourier(resultSet);
+        });
     }
 }

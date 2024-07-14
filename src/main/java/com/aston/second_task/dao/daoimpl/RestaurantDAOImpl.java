@@ -152,7 +152,7 @@ public class RestaurantDAOImpl implements RestaurantDAO {
             ps.setInt(7, restaurant.getId());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                throw new ElementNotFoundExceptions("Restaurant with id " + restaurant.getId() + " not found for update");
+                throw new ElementNotUpdatedException("Restaurant with id " + restaurant.getId() + " not found for update");
             }
         } catch (SQLException se) {
             LOGGER.error("Error updating restaurant", se);

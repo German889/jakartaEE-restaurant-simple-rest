@@ -4,6 +4,8 @@ import com.aston.second_task.dto.incoming.DishDTOInc;
 import com.aston.second_task.dto.outgoing.DishDTOOut;
 import com.aston.second_task.entity.Dish;
 import com.aston.second_task.entity.Restaurant;
+import com.aston.second_task.exceptions.*;
+import com.aston.second_task.mapper.DishMapper;
 import com.aston.second_task.service.DishService;
 import com.aston.second_task.service.RestaurantService;
 import org.junit.jupiter.api.BeforeEach;
@@ -57,6 +59,23 @@ class DishControllerTest {
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(dishDTOOut, response.getEntity());
     }
+    @Test
+    void getDish_NotFound() {
+        Integer dishId = 1;
+        when(dishService.findDishById(dishId)).thenThrow(new ElementNotFoundExceptions("Dish not found"));
+        Response response = dishController.getDish(dishId);
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertEquals("Dish not found", response.getEntity());
+    }
+
+    @Test
+    void getDish_InternalServerError() {
+        Integer dishId = 1;
+        when(dishService.findDishById(dishId)).thenThrow(new RuntimeException("Some unexpected error"));
+        Response response = dishController.getDish(dishId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
+    }
 
     @Test
     void getAllDishes() {
@@ -93,6 +112,21 @@ class DishControllerTest {
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         assertEquals(dishDTOOuts, response.getEntity());
     }
+    @Test
+    void getAllDishes_NotFound() {
+        when(dishService.findAllDishes()).thenThrow(new ElementsNotFoundException("No dishes found"));
+        Response response = dishController.getAllDishes();
+        assertEquals(Response.Status.NOT_FOUND.getStatusCode(), response.getStatus());
+        assertEquals("No dishes found", response.getEntity());
+    }
+
+    @Test
+    void getAllDishes_InternalServerError() {
+        when(dishService.findAllDishes()).thenThrow(new RuntimeException("Some unexpected error"));
+        Response response = dishController.getAllDishes();
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
+    }
 
     @Test
     void saveDish() {
@@ -112,6 +146,19 @@ class DishControllerTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         verify(dishService, times(1)).saveDish(dish);
+    }
+
+    @Test
+    void saveDish_InternalServerError() {
+        DishDTOInc dishDTOInc = new DishDTOInc();
+        Dish dish = DishMapper.INSTANCE.dishDTOIncToDish(dishDTOInc);
+        Restaurant restaurant = new Restaurant();
+        dish.setRestaurant(restaurant);
+        when(restaurantService.getRestaurantID(restaurant)).thenReturn(1);
+        doThrow(new RuntimeException("Some unexpected error")).when(dishService).saveDish(dish);
+        Response response = dishController.saveDish(dishDTOInc);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
     }
 
     @Test
@@ -136,6 +183,20 @@ class DishControllerTest {
     }
 
     @Test
+    void updateDish_InternalServerError() {
+        Integer dishId = 1;
+        DishDTOInc dishDTOInc = new DishDTOInc();
+        Dish dish = DishMapper.INSTANCE.dishDTOIncToDish(dishDTOInc);
+        Restaurant restaurant = new Restaurant();
+        dish.setRestaurant(restaurant);
+        when(restaurantService.getRestaurantID(restaurant)).thenReturn(1);
+        doThrow(new RuntimeException("Some unexpected error")).when(dishService).updateDish(dish, dishId);
+        Response response = dishController.updateDish(dishDTOInc, dishId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
+    }
+
+    @Test
     void deleteDish() {
         Integer id = 1;
 
@@ -143,5 +204,22 @@ class DishControllerTest {
 
         assertEquals(Response.Status.OK.getStatusCode(), response.getStatus());
         verify(dishService, times(1)).deleteDish(id);
+    }
+    @Test
+    void deleteDish_ElementNotDeleted() {
+        Integer dishId = 1;
+        doThrow(new ElementNotDeletedException("Error deleting dish")).when(dishService).deleteDish(dishId);
+        Response response = dishController.deleteDish(dishId);
+        assertEquals(Response.Status.BAD_REQUEST.getStatusCode(), response.getStatus());
+        assertEquals("Error deleting dish", response.getEntity());
+    }
+
+    @Test
+    void deleteDish_InternalServerError() {
+        Integer dishId = 1;
+        doThrow(new RuntimeException("Some unexpected error")).when(dishService).deleteDish(dishId);
+        Response response = dishController.deleteDish(dishId);
+        assertEquals(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(), response.getStatus());
+        assertEquals("Internal server error", response.getEntity());
     }
 }

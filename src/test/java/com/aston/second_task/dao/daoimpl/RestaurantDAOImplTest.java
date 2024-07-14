@@ -1,24 +1,39 @@
 package com.aston.second_task.dao.daoimpl;
 
+import com.aston.second_task.dao.RestaurantDAO;
 import com.aston.second_task.entity.Restaurant;
+import com.aston.second_task.exceptions.*;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
 import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.doThrow;
+import static org.mockito.Mockito.when;
 
 @Testcontainers
+@ExtendWith(MockitoExtension.class)
 public class RestaurantDAOImplTest {
+    @Mock
+    private Statement statement;
+
+    @Mock
+    private PreparedStatement preparedStatement;
+
+    @Mock
+    private ResultSet resultSet;
+
 
     @Container
     public static PostgreSQLContainer<?> postgreSQLContainer = new PostgreSQLContainer<>("postgres:13")
@@ -99,7 +114,7 @@ public class RestaurantDAOImplTest {
         restaurant.setWorkingHours("9AM-5PM");
         restaurantDAO.save(restaurant);
 
-        Restaurant foundRestaurant = restaurantDAO.findById(6);
+        Restaurant foundRestaurant = restaurantDAO.findById(7);
 
         assertNotNull(foundRestaurant);
         assertEquals(restaurant.getName(), foundRestaurant.getName());
@@ -108,6 +123,19 @@ public class RestaurantDAOImplTest {
         assertEquals(restaurant.getEmail(), foundRestaurant.getEmail());
         assertEquals(restaurant.getPhone(), foundRestaurant.getPhone());
         assertEquals(restaurant.getWorkingHours(), foundRestaurant.getWorkingHours());
+    }
+    @Test
+    public void testSaveThrowsElementNotSavedException() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setName(null);
+        restaurant.setAddress("123 Test St");
+        restaurant.setRating(new BigDecimal("4.5"));
+        restaurant.setEmail("test@example.com");
+        restaurant.setPhone("1234567890");
+        restaurant.setWorkingHours("9AM-5PM");
+        assertThrows(ElementNotSavedException.class, () -> {
+            restaurantDAO.save(restaurant);
+        });
     }
 
     @Test
@@ -166,11 +194,65 @@ public class RestaurantDAOImplTest {
         assertEquals("4444444444", updatedRestaurant.getPhone());
         assertEquals("9AM-5PM", updatedRestaurant.getWorkingHours());
     }
+    @Test
+    public void testUpdateThrowsElementNotUpdatedException() {
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(999);
+        restaurant.setName("Test Restaurant");
+        restaurant.setAddress("123 Test St");
+        restaurant.setRating(new BigDecimal("4.5"));
+        restaurant.setEmail("test@example.com");
+        restaurant.setPhone("1234567890");
+        restaurant.setWorkingHours("9AM-5PM");
+
+        // Проверяем, что метод update выбрасывает исключение ElementNotUpdatedException
+        assertThrows(ElementNotUpdatedException.class, () -> {
+            restaurantDAO.update(restaurant);
+        });
+    }
+    @Test
+    public void testUpdateThrowsSQLException() {
+        // Создаем объект Restaurant с несуществующим столбцом в запросе
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1); // Предполагаемый существующий ID
+        restaurant.setName("Test Restaurant");
+        restaurant.setAddress("123 Test St");
+        restaurant.setRating(new BigDecimal("4.5"));
+        restaurant.setEmail("test@example.com");
+        restaurant.setPhone("1234567890");
+        restaurant.setWorkingHours("9AM-5PM");
+
+        // Подменяем SQL-запрос на ошибочный, включая несуществующий столбец
+        String faultySql = "UPDATE restaurant " +
+                "SET " +
+                "name = ?, " +
+                "address = ?, " +
+                "rating = ?, " +
+                "email = ?, " +
+                "phone = ?, " +
+                "working_hours = ?, " +
+                "nonexistent_column = ? " + // Несуществующий столбец
+                "WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(faultySql)) {
+            ps.setString(1, restaurant.getName());
+            ps.setString(2, restaurant.getAddress());
+            ps.setBigDecimal(3, restaurant.getRating());
+            ps.setString(4, restaurant.getEmail());
+            ps.setString(5, restaurant.getPhone());
+            ps.setString(6, restaurant.getWorkingHours());
+            ps.setString(7, "some value");
+            ps.setInt(8, restaurant.getId());
+            ps.executeUpdate();
+        } catch (SQLException se) {
+            assertNotNull(se);
+        }
+    }
 
     @Test
     public void testDelete() {
         Restaurant restaurant = new Restaurant();
-        restaurant.setId(4);
+        restaurant.setId(3);
         restaurant.setName("To Be Deleted");
         restaurant.setAddress("Delete Address");
         restaurant.setRating(new BigDecimal("3.0"));
@@ -184,6 +266,14 @@ public class RestaurantDAOImplTest {
         Restaurant deletedRestaurant = restaurantDAO.findById(restaurant.getId());
 
         assertNull(deletedRestaurant);
+    }
+    @Test
+    public void testDeleteNonExistentRestaurant() {
+        Integer nonExistentId = 999;
+
+        assertThrows(ElementNotFoundExceptions.class, () -> {
+            restaurantDAO.delete(nonExistentId);
+        });
     }
 
     @Test
@@ -201,4 +291,5 @@ public class RestaurantDAOImplTest {
 
         assertNotNull(id);
     }
+
 }

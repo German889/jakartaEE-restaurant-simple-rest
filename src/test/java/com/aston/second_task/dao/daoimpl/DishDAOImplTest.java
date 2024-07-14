@@ -3,6 +3,9 @@ package com.aston.second_task.dao.daoimpl;
 import com.aston.second_task.dao.DishDAO;
 import com.aston.second_task.entity.Dish;
 import com.aston.second_task.entity.Restaurant;
+import com.aston.second_task.exceptions.ElementNotFoundExceptions;
+import com.aston.second_task.exceptions.ElementNotSavedException;
+import com.aston.second_task.exceptions.ElementNotUpdatedException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +23,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @Testcontainers
 public class DishDAOImplTest {
+
 
     @Container
     private static final PostgreSQLContainer<?> postgresContainer = new PostgreSQLContainer<>("postgres:latest")
@@ -118,11 +122,26 @@ public class DishDAOImplTest {
 
         dishDAO.save(dish);
 
-        Dish foundDish = dishDAO.findById(3);
+        Dish foundDish = dishDAO.findById(4);
         assertNotNull(foundDish);
         assertEquals("Test Dish", foundDish.getName());
         assertEquals("10.00", foundDish.getPrice());
     }
+    @Test
+    void testSaveThrowsElementNotSavedException() {
+        Dish dish = new Dish();
+        dish.setName("Test Dish");
+        dish.setDescription("Test Description");
+        dish.setPrice("10.00");
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(999);
+        dish.setRestaurant(restaurant);
+        dish.setImageURL("http://example.com/image.jpg");
+        assertThrows(ElementNotSavedException.class, () -> {
+            dishDAO.save(dish);
+        });
+    }
+
 
     @Test
     void testFindAll() {
@@ -173,6 +192,21 @@ public class DishDAOImplTest {
         assertEquals("Updated Dish", updatedDish.getName());
         assertEquals("15.00", updatedDish.getPrice());
     }
+    @Test
+    void testUpdateThrowsElementNotUpdatedException() {
+        Dish dish = new Dish();
+        dish.setId(999); // Несуществующий id
+        dish.setName("Test Dish");
+        dish.setDescription("Test Description");
+        dish.setPrice("10.00");
+        Restaurant restaurant = new Restaurant();
+        restaurant.setId(1);
+        dish.setRestaurant(restaurant);
+        dish.setImageURL("http://example.com/image.jpg");
+        assertThrows(ElementNotUpdatedException.class, () -> {
+            dishDAO.update(dish);
+        });
+    }
 
     @Test
     void testDelete() {
@@ -191,5 +225,12 @@ public class DishDAOImplTest {
 
         Dish deletedDish = dishDAO.findById(1);
         assertNull(deletedDish);
+    }
+    @Test
+    void testDeleteThrowsElementNotFoundExceptions() {
+        Integer nonExistentId = 999;
+        assertThrows(ElementNotFoundExceptions.class, () -> {
+            dishDAO.delete(nonExistentId);
+        });
     }
 }

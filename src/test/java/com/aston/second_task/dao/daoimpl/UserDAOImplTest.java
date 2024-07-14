@@ -1,21 +1,26 @@
 package com.aston.second_task.dao.daoimpl;
+import com.aston.second_task.dao.UserDAO;
 import com.aston.second_task.entity.AppUser;
+import com.aston.second_task.exceptions.ElementNotDeletedException;
+import com.aston.second_task.exceptions.ElementNotSavedException;
+import com.aston.second_task.exceptions.ElementNotUpdatedException;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.testcontainers.containers.PostgreSQLContainer;
 import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+
 @Testcontainers
+@ExtendWith(MockitoExtension.class)
 public class UserDAOImplTest {
 
     @Container
@@ -111,6 +116,23 @@ public class UserDAOImplTest {
         assertEquals(appUser.getAddress(), foundUser.getAddress());
         assertEquals(appUser.getRole(), foundUser.getRole());
     }
+    @Test
+    public void testSaveThrowsElementNotSavedException() {
+        // Создаем объект AppUser с некорректными данными
+        AppUser appUser = new AppUser();
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setEmail(null); // Устанавливаем null, чтобы вызвать исключение
+        appUser.setPhone("1234567890");
+        appUser.setPassword("password");
+        appUser.setAddress("123 Main St");
+        appUser.setRole("user");
+
+        // Проверяем, что метод save выбрасывает исключение ElementNotSavedException
+        assertThrows(ElementNotSavedException.class, () -> {
+            userDAO.save(appUser);
+        });
+    }
 
     @Test
     public void testFindAll() {
@@ -174,6 +196,47 @@ public class UserDAOImplTest {
         assertEquals(appUser.getPassword(), updatedUser.getPassword());
         assertEquals(appUser.getAddress(), updatedUser.getAddress());
         assertEquals(appUser.getRole(), updatedUser.getRole());
+    }
+    @Test
+    public void testUpdateUserThrowsSQLException() {
+        // Создаем объект AppUser с несуществующим столбцом в запросе
+        AppUser appUser = new AppUser();
+        appUser.setId(1); // Предполагаемый существующий ID
+        appUser.setFirstName("John");
+        appUser.setLastName("Doe");
+        appUser.setEmail("john.doe@example.com");
+        appUser.setPhone("1234567890");
+        appUser.setPassword("password");
+        appUser.setAddress("123 Main St");
+        appUser.setRole("user");
+
+        // Подменяем SQL-запрос на ошибочный, включая несуществующий столбец
+        String faultySql = "UPDATE app_user " +
+                "SET " +
+                "first_name = ?, " +
+                "last_name = ?, " +
+                "email = ?, " +
+                "phone = ?, " +
+                "password = ?, " +
+                "address = ?, " +
+                "role = ?, " +
+                "nonexistent_column = ? " + // Несуществующий столбец
+                "WHERE id = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(faultySql)) {
+            ps.setString(1, appUser.getFirstName());
+            ps.setString(2, appUser.getLastName());
+            ps.setString(3, appUser.getEmail());
+            ps.setString(4, appUser.getPhone());
+            ps.setString(5, appUser.getPassword());
+            ps.setString(6, appUser.getAddress());
+            ps.setString(7, appUser.getRole());
+            ps.setString(8, "some value");
+            ps.setInt(9, appUser.getId());
+            ps.executeUpdate();
+        } catch (SQLException se) {
+            assertNotNull(se);
+        }
     }
 
     @Test

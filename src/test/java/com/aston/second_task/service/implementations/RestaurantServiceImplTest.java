@@ -2,6 +2,7 @@ package com.aston.second_task.service.implementations;
 
 import com.aston.second_task.entity.Restaurant;
 import com.aston.second_task.dao.RestaurantDAO;
+import com.aston.second_task.exceptions.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -28,86 +29,89 @@ class RestaurantServiceImplTest {
     }
 
     @Test
-    void saveRestaurant() {
+    void saveRestaurant_ElementNotSavedException() {
         Restaurant restaurant = new Restaurant();
         restaurant.setName("Test Restaurant");
 
-        restaurantService.saveRestaurant(restaurant);
+        doThrow(new ElementNotSavedException("Error saving restaurant")).when(restaurantDAO).save(restaurant);
 
+        Exception exception = assertThrows(ElementNotSavedException.class, () -> {
+            restaurantService.saveRestaurant(restaurant);
+        });
+
+        assertEquals("Restaurant not saved", exception.getMessage());
         verify(restaurantDAO, times(1)).save(restaurant);
     }
 
     @Test
-    void findRestaurantById() {
+    void findRestaurantById_ElementNotFoundExceptions() {
         Integer id = 1;
-        Restaurant restaurant = new Restaurant();
-        restaurant.setId(id);
-        restaurant.setName("Test Restaurant");
 
-        when(restaurantDAO.findById(id)).thenReturn(restaurant);
+        when(restaurantDAO.findById(id)).thenThrow(new ElementNotFoundExceptions("Restaurant not found"));
 
-        Restaurant foundRestaurant = restaurantService.findRestaurantById(id);
+        Exception exception = assertThrows(ElementNotFoundExceptions.class, () -> {
+            restaurantService.findRestaurantById(id);
+        });
 
-        assertNotNull(foundRestaurant);
-        assertEquals(id, foundRestaurant.getId());
+        assertEquals("Restaurant with id " + id + " not found", exception.getMessage());
         verify(restaurantDAO, times(1)).findById(id);
     }
 
     @Test
-    void findAllRestaurants() {
-        Restaurant restaurant1 = new Restaurant();
-        restaurant1.setId(1);
-        restaurant1.setName("Test Restaurant 1");
+    void findAllRestaurants_ElementsNotFoundException() {
+        when(restaurantDAO.findAll()).thenThrow(new ElementsNotFoundException("No restaurants found"));
 
-        Restaurant restaurant2 = new Restaurant();
-        restaurant2.setId(2);
-        restaurant2.setName("Test Restaurant 2");
+        Exception exception = assertThrows(ElementsNotFoundException.class, () -> {
+            restaurantService.findAllRestaurants();
+        });
 
-        List<Restaurant> restaurants = Arrays.asList(restaurant1, restaurant2);
-
-        when(restaurantDAO.findAll()).thenReturn(restaurants);
-
-        List<Restaurant> foundRestaurants = restaurantService.findAllRestaurants();
-
-        assertNotNull(foundRestaurants);
-        assertEquals(2, foundRestaurants.size());
+        assertEquals("No restaurants found", exception.getMessage());
         verify(restaurantDAO, times(1)).findAll();
     }
 
     @Test
-    void updateRestaurant() {
+    void updateRestaurant_ElementNotUpdatedException() {
         Integer id = 1;
         Restaurant restaurant = new Restaurant();
         restaurant.setName("Test Restaurant");
 
-        restaurantService.updateRestaurant(restaurant, id);
+        doThrow(new ElementNotUpdatedException("Error updating restaurant")).when(restaurantDAO).update(restaurant);
 
-        assertEquals(id, restaurant.getId());
+        Exception exception = assertThrows(ElementNotUpdatedException.class, () -> {
+            restaurantService.updateRestaurant(restaurant, id);
+        });
+
+        assertEquals("Restaurant not updated", exception.getMessage());
         verify(restaurantDAO, times(1)).update(restaurant);
     }
 
     @Test
-    void deleteRestaurant() {
+    void deleteRestaurant_ElementNotDeletedException() {
         Integer id = 1;
 
-        restaurantService.deleteRestaurant(id);
+        doThrow(new ElementNotDeletedException("Error deleting restaurant")).when(restaurantDAO).delete(id);
 
+        Exception exception = assertThrows(ElementNotDeletedException.class, () -> {
+            restaurantService.deleteRestaurant(id);
+        });
+
+        assertEquals("Restaurant with id " + id + " not deleted", exception.getMessage());
         verify(restaurantDAO, times(1)).delete(id);
     }
 
     @Test
-    void getRestaurantID() {
+    void getRestaurantID_IdNotReceivedException() {
         Restaurant restaurant = new Restaurant();
         restaurant.setAddress("123 Test St");
         restaurant.setEmail("test@example.com");
-        Integer id = 1;
 
-        when(restaurantDAO.getId(restaurant)).thenReturn(id);
+        when(restaurantDAO.getId(restaurant)).thenThrow(new IdNotReceivedException("ID not received"));
 
-        Integer foundId = restaurantService.getRestaurantID(restaurant);
+        Exception exception = assertThrows(IdNotReceivedException.class, () -> {
+            restaurantService.getRestaurantID(restaurant);
+        });
 
-        assertNotNull(foundId);
-        assertEquals(id, foundId);
+        assertEquals("Restaurant ID not received", exception.getMessage());
         verify(restaurantDAO, times(1)).getId(restaurant);
     }
 }

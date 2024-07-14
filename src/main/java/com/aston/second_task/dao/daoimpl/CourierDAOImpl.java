@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Dependent
+
 public class CourierDAOImpl implements CourierDAO {
     private static final Logger LOGGER = LoggerFactory.getLogger(CourierDAOImpl.class);
     private Connection connection;
@@ -100,7 +101,7 @@ public class CourierDAOImpl implements CourierDAO {
         }
     }
 
-    private Courier mapResultSetToCourier(ResultSet rs) throws SQLException {
+    Courier mapResultSetToCourier(ResultSet rs) throws SQLException {
         Courier courier = new Courier();
         courier.setId(rs.getInt("id"));
         AppUser appUser = new AppUser();

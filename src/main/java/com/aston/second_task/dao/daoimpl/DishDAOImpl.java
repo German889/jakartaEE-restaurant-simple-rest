@@ -17,6 +17,7 @@ import java.util.List;
 
 @Dependent
 public class DishDAOImpl implements DishDAO {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(DishDAOImpl.class);
 
     private Connection connection;
@@ -109,7 +110,7 @@ public class DishDAOImpl implements DishDAO {
             ps.setInt(6, dish.getId());
             int affectedRows = ps.executeUpdate();
             if (affectedRows == 0) {
-                throw new ElementNotFoundExceptions("Dish with id " + dish.getId() + " not found for update");
+                throw new ElementNotUpdatedException("Dish with id " + dish.getId() + " not found for update");
             }
         } catch (SQLException se) {
             LOGGER.error("Error updating dish ", se);

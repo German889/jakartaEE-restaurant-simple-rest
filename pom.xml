@@ -11,6 +11,7 @@
   <packaging>war</packaging>
 
   <properties>
+      <sonar.host.url>http://localhost:9000</sonar.host.url>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>11</maven.compiler.target>
     <maven.compiler.source>11</maven.compiler.source>
@@ -107,6 +108,12 @@
           <version>1.19.8</version>
           <scope>test</scope>
       </dependency>
+      <dependency>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-surefire-plugin</artifactId>
+          <version>3.3.1</version>
+      </dependency>
+
 
   </dependencies>
 
@@ -117,6 +124,7 @@
               <artifactId>maven-war-plugin</artifactId>
               <version>3.3.2</version>
           </plugin>
+
           <plugin>
               <groupId>org.apache.maven.plugins</groupId>
               <artifactId>maven-compiler-plugin</artifactId>
